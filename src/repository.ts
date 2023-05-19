@@ -1,23 +1,28 @@
 import { ModelBase, DatasourceBase } from "./base";
+import { getConfig } from "./config";
 
 export class Repository<Model extends ModelBase<IdType>, Datasource extends DatasourceBase<IdType> , IdType> {
 
     private datasource: Datasource
 
-    modelClass: { config: object, new(data: object): Model }
+    modelClass: {  new(data: object): Model }
 
     async get(id: IdType, options?: object): Promise<Model> {
         const data = await this.datasource.get(id, {
             ...options,
-            ...this.modelClass.config
+            ...getConfig(this.modelClass)
         });
         return new this.modelClass(data);
     }
 
     async create(entity: Model, options?: object) {
+       const valid = entity.validate();
+       if(!valid.valid) {
+            throw new Error(JSON.stringify(valid.errors));
+       }
        const data = await this.datasource.create(entity.toJSON(),{
             ...options,
-            ...this.modelClass.config
+            ...getConfig(this.modelClass)
         });
         return new this.modelClass(data);
     }
@@ -25,20 +30,21 @@ export class Repository<Model extends ModelBase<IdType>, Datasource extends Data
     async update(id: IdType, data: Partial<Model>, options?: object) {
        await this.datasource.update(id, data,{
             ...options,
-            ...this.modelClass.config
+            ...getConfig(this.modelClass)
         });
     }
 
     async delete(id: IdType, options?: object) {
        await this.datasource.delete(id,{
             ...options,
-            ...this.modelClass.config
+            ...getConfig(this.modelClass)
         });
     }
 
-    constructor(datasource: Datasource, modelClass: { config: object, new(data: any): Model }) {
+    constructor(datasource: Datasource, modelClass: { new(data: any): Model }) {
         this.datasource = datasource;
         this.modelClass = modelClass
+        
     }
 
 }

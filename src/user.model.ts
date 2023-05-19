@@ -1,39 +1,59 @@
 import { ModelBase } from "./base";
+import { config } from "./config";
+import { property } from "./property";
 
 
+
+@config({
+    apiBase: "https://petstore.swagger.io/v2/user",
+})
 export class User extends ModelBase<string> {
   getId(): string {
-      return this.username
+    return this.id.toString();
   }
-  static readonly config =  {
-    apiBase: "https://petstore.swagger.io/v2/user"
-  };
-  id: number
-  username: string
-  firstName: string
-  lastName: string
-  email: string
+
+  @property({
+    required: true,
+    type: 'number'
+  })
+  id: number;
+
+  @property({
+    required: true,
+    type: 'string'
+  })
+  firstName?: string;
+
+  @property({
+    required: false,
+    type: 'string'
+  })
+  lastName?: string;
+
+  @property({
+    type: 'string',
+    required: false
+  })
+  username?: string
+
 
   public get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }
 
+ 
+
   constructor(data: {
-    id: number
-    username: string
-    firstName: string
-    lastName: string
-    email: string
-    password: string
-    phone: string
-    userStatus: number
+    id: number;
+    firstName?: string;
+    lastName?: string;
+    dob?: Date;
+    anDate?: Date;
   }) {
     super();
     this.id = data.id;
-    this.username = data.username;
     this.firstName = data.firstName;
     this.lastName = data.lastName;
-    this.email = data.email ?? [];
   }
 
   
@@ -41,10 +61,8 @@ export class User extends ModelBase<string> {
   toJSON(): object {
     return {
       id: this.id,
-      category: this.username,
-      name: this.firstName,
-      photoUrls: this.lastName,
-      tags: this.email,
+      firstName: this.firstName,
+      lastName: this.lastName,
     };
   }
 }
