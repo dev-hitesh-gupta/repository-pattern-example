@@ -4,7 +4,7 @@ class Componenet {}
 interface User {
   name: string
 }
-export class UserComponent extends StoreAccessMixin(Componenet) {
+ export class UserComponent extends StoreAccessMixin(Componenet) {
 
 
   render() {
@@ -17,3 +17,8 @@ export class UserComponent extends StoreAccessMixin(Componenet) {
   }
 
 }
+ const greet = 'hello'
+
+
+export {greet as message};
+

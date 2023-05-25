@@ -1,16 +1,16 @@
-import { Store } from "./examples/store";
-import { UserComponent } from "./examples/user-component";
-
-
-
-const store = Store.getInstance()
-
-store.data = {
-  user: {
-    name: 'Hitesh'
-  }
+import {Model} from "./models";
+function math() {
+    console.log(3)
 }
 
+namespace math {
+    export function add(a: number, b:number) {
+        return a + b;
+    }
+}
 
-const userComp = new UserComponent();
+math();
+
+console.log(math.add(1,1));
+
 
